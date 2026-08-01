@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}{{ article.title }} – Dresdner Nachrichten{% endblock %}
+
+{% block content %}
+<article class="article-full"
+         data-article-id="{{ article.id }}"
+         data-title="{{ article.title | e }}"
+         data-source="{{ article.source_name | e }}">
+  <a href="/" class="back-link">← Zurück</a>
+
+  <div class="article-meta">
+    <span class="source-badge">{{ article.source_name }}</span>
+    <span class="article-date">{{ article.published_at | fmt_date }}</span>
+  </div>
+
+  <h1 class="article-full-title">{{ article.title }}</h1>
+
+  <div class="action-bar">
+    <button class="btn" onclick="handlePlay(this, 'content')">▶ Vorlesen</button>
+    {% if not article.content %}
+    <span class="paywall-hint">Zusammenfassung nur bei verfügbarem Volltext</span>
+    {% else %}
+    <button class="btn" id="btn-summarize"
+            onclick="summarizeInline({{ article.id }}, this)">
+      {% if article.summary %}✦ Neu zusammenfassen{% else %}✦ Zusammenfassen{% endif %}
+    </button>
+    {% endif %}
+    <a href="{{ article.url }}" target="_blank" rel="noopener" class="btn btn-ghost">Original ↗</a>
+  </div>
+
+  <div class="article-body">
+    {% if article.content %}
+      {% for para in article.content.split('\n') %}
+        {% if para.strip() %}<p>{{ para.strip() }}</p>{% endif %}
+      {% endfor %}
+    {% else %}
+      <p class="teaser-text">{{ article.teaser }}</p>
+      <p class="paywall-notice">
+        Volltext nicht verfügbar (Paywall).
+        <a href="{{ article.url }}" target="_blank" rel="noopener">Artikel beim Original lesen ↗</a>
+      </p>
+    {% endif %}
+  </div>
+
+  <div id="summary-container" class="summary-box"
+       {% if not article.summary %}style="display:none"{% endif %}>
+    <div class="summary-header">
+      <strong>Zusammenfassung</strong>
+      <button class="btn btn-sm" onclick="handlePlay(this, 'summary')">▶ Vorlesen</button>
+    </div>
+    <p id="summary-text">{{ article.summary or "" }}</p>
+  </div>
+</article>
+
+<script>
+window.ARTICLE_IDS = [{{ article.id }}];
+</script>
+{% endblock %}

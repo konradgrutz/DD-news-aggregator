@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<nav class="source-filter">
+  <a href="/" class="badge {% if not active_source %}badge-active{% endif %}">Alle</a>
+  {% for source in sources %}
+  <a href="/?quelle={{ source | urlencode }}"
+     class="badge {% if active_source == source %}badge-active{% endif %}">{{ source }}</a>
+  {% endfor %}
+</nav>
+
+{% if articles %}
+<ul class="article-list">
+  {% for a in articles %}
+  <li class="article-card"
+      data-article-id="{{ a.id }}"
+      data-title="{{ a.title | e }}"
+      data-source="{{ a.source_name | e }}">
+    <div class="article-main">
+      <div class="article-meta">
+        <span class="source-badge">{{ a.source_name }}</span>
+        <span class="article-date">{{ a.published_at | fmt_date }}</span>
+      </div>
+      <h2 class="article-title">{{ a.title }}</h2>
+      {% if a.teaser %}
+      <p class="article-teaser">{{ a.teaser }}</p>
+      {% endif %}
+    </div>
+    <div class="article-actions">
+      <button class="btn btn-action" onclick="handleRead(this, 'content')">Lesen</button>
+      {% if a.content %}
+      <button class="btn btn-action" onclick="handleRead(this, 'summary')">Kurzfassung</button>
+      {% endif %}
+      <button class="btn btn-action btn-play" onclick="handlePlay(this, 'content')">▶ Hören</button>
+      {% if a.content %}
+      <button class="btn btn-action btn-play" onclick="handlePlay(this, 'summary')">▶ Kurz</button>
+      {% endif %}
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<div class="empty-state">
+  <p>Noch keine Artikel vorhanden.</p>
+  <p>Klicke auf <strong>↻ Aktualisieren</strong> um den ersten Scrape zu starten.</p>
+</div>
+{% endif %}
+
+<script>
+window.ARTICLE_IDS = [{% for a in articles %}{{ a.id }}{% if not loop.last %},{% endif %}{% endfor %}];
+</script>
+{% endblock %}

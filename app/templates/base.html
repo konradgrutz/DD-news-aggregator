@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Dresdner Nachrichten{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css?v=10">
+</head>
+<body>
+  <header class="site-header">
+    <a href="/" class="site-title">Dresdner Nachrichten</a>
+    <button class="btn btn-ghost" onclick="triggerScrape(this)">↻ Aktualisieren</button>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Lese-Modal -->
+  <div id="modal" class="modal-overlay modal-hidden" onclick="handleModalClick(event)">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-meta">
+          <div class="modal-meta-top">
+            <span id="modal-source" class="source-badge"></span>
+            <span id="modal-type-badge" class="modal-type-badge"></span>
+          </div>
+          <h2 id="modal-title" class="modal-title"></h2>
+        </div>
+        <div class="modal-actions">
+          <div class="modal-top-row">
+            <button class="modal-play-btn" onclick="playFromModal()" title="Vorlesen">▶</button>
+            <button class="modal-close"    onclick="closeModal()">✕</button>
+          </div>
+          <div class="modal-nav-row">
+            <button class="btn btn-sm modal-nav-btn" id="modal-prev"
+                    onclick="navigateModal(-1)" title="Vorheriger Artikel">«</button>
+            <button class="btn btn-sm modal-nav-btn" id="modal-next"
+                    onclick="navigateModal(1)"  title="Nächster Artikel">»</button>
+          </div>
+        </div>
+      </div>
+      <div id="modal-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Bottom Player -->
+  <div id="player" class="player player-hidden">
+
+    <!-- Schließen-Button oben rechts -->
+    <button class="player-close-btn" onclick="hidePlayer()" title="Player schließen">✕</button>
+
+    <!-- Info: Quelle · Typ · Zeit · Titel -->
+    <div class="player-info">
+      <div class="player-meta-row">
+        <span id="player-source" class="source-badge source-badge-sm"></span>
+        <span id="player-type"   class="player-type-badge"></span>
+        <span id="player-progress" class="player-progress">0:00 / –:––</span>
+      </div>
+      <span id="player-title"  class="player-title">–</span>
+      <span id="player-status" class="player-status"></span>
+    </div>
+
+    <!-- Seek-Slider -->
+    <div class="player-seek-row">
+      <input type="range" id="seek-slider" class="seek-range"
+             min="0" max="100" step="0.1" value="0"
+             onpointerdown="seekStart()"
+             onchange="seekEnd(this.value)"
+             oninput="seekInput(this.value)">
+    </div>
+
+    <!-- Controls: ⏮  «  ▶  »  ⏭ -->
+    <div class="player-controls">
+      <button class="btn player-btn"       onclick="playerPrev()" title="Vorheriger Artikel">⏮</button>
+      <button class="btn player-skip-btn"  onclick="skip(-15)"   title="15s zurück">«</button>
+      <button class="btn player-btn player-main-btn" id="btn-play-pause" onclick="playerToggle()">▶</button>
+      <button class="btn player-skip-btn"  onclick="skip(15)"    title="15s vor">»</button>
+      <button class="btn player-btn"       onclick="playerNext()" title="Nächster Artikel">⏭</button>
+    </div>
+
+    <!-- Speed-Slider -->
+    <div class="player-speed">
+      <span class="speed-end">0.5×</span>
+      <input type="range" id="speed-slider" class="speed-range"
+             min="50" max="300" step="10" value="150"
+             oninput="setSpeed(this.value)">
+      <span class="speed-end">3×</span>
+      <span id="speed-label" class="speed-label">1.5×</span>
+    </div>
+
+  </div>
+
+  <script src="/static/app.js?v=5"></script>
+</body>
+</html>
