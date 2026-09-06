@@ -24,7 +24,7 @@ cp .env.example .env
 | Variable | Beschreibung | Default |
 |---|---|---|
 | `GEMINI_API_KEY` | Google Gemini API-Key (für Zusammenfassungen) | — |
-| `GEMINI_MODEL` | Gemini-Modell | `gemini-2.0-flash` |
+| `GEMINI_MODEL` | Gemini-Modell | `gemini-3.1-flash-lite` |
 | `SCRAPE_INTERVAL_HOURS` | Abstand zwischen Scrape-Läufen | `4` |
 | `ARTICLE_RETENTION_DAYS` | Wie lange Artikel aufbewahrt werden | `7` |
 
